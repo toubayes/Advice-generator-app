@@ -1,0 +1,68 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    font-family: 'Manrope', sans-serif;
+}
+.document{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: hsl(218, 23%, 16%);
+    height: 100vh;
+}
+.document .advise-box{
+    padding: 10px;
+    border-radius: 16px;
+    background-color: hsl(217, 19%, 24%);
+    text-align: center;
+    position: relative;
+    max-width: 450px;
+  height: 350px;
+}
+@media (max-width:375px) {
+    .document .advise-box
+     {max-width: 350px;
+        height: 400px;
+    }
+    
+    
+}
+.document .advise-box > p{
+    margin-top: 20px;
+    color: hsl(146, 100%, 50%);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+.document .advise-box .text-advicd{
+    font-size: 28px;
+    color: hsl(193, 38%, 86%);
+    line-height: 1.5;
+    margin: 30px 0;
+    height: 180px;
+   
+}
+.document .advise-box .text-advicd img{
+    max-width: 100%;
+
+}
+.document .advise-box .img-btn{
+      position: absolute;
+    bottom: -25px;
+    left: 45%;
+    border-radius: 50%;
+    padding: 16px;
+    background-color: hsl(146, 100%, 50%);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0); 
+}.document .advise-box .img-btn:hover{
+    background-color: hsl(150, 100%, 66%);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 1);
+
+}
+.document .advise-box .rood{
+   color: hsl(193, 38%, 86%);
+   
+}
