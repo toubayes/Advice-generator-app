@@ -19,6 +19,10 @@ async function displaytip() {
         const dataset = await requet.json();
         numtip.textContent = `#${dataset.slip.id}`;
         tips.textContent = `“${dataset.slip.advice}”`;
+        // Restart the fade-in animation for each new piece of advice
+        tips.classList.remove("fade-in");
+        void tips.offsetWidth;
+        tips.classList.add("fade-in");
     } catch (error) {
         console.error(error);
         tips.textContent = "Couldn't fetch advice right now. Please try again.";

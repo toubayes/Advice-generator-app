@@ -2,7 +2,9 @@
 
 This is a solution to the [Advice generator app challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/advice-generator-app-QdUG-13db).
 
-![Design preview](./design/desktop-preview.jpg)
+**Live site:** https://toubayes.github.io/Advice-generator-app/
+
+![Screenshot of the advice generator app](./screenshot.jpg)
 
 ## Overview
 
@@ -20,6 +22,7 @@ Users should be able to:
 - Bypasses the API's response cache so every click returns new advice
 - Loading state (spinning dice) and a friendly error message if the request fails
 - Responsive divider image via `<picture>`, keyboard-accessible dice button
+- New advice fades in, and the dice reacts when pressed
 - Respects `prefers-reduced-motion`
 
 ## Built with
@@ -35,6 +38,10 @@ No build step is needed. Open `index.html` in a browser, or serve the folder:
 ```bash
 npx serve .
 ```
+
+## Deployment
+
+The site is hosted on GitHub Pages from the `main` branch, so every merge to `main` updates the live site.
 
 ## Author
 
