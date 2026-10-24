@@ -24,6 +24,7 @@ body {
 .document {
     flex: 1;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 2rem 1rem 4rem;
@@ -60,6 +61,17 @@ body {
     opacity: 0.4;
 }
 
+.document .advise-box .text-advicd.fade-in {
+    animation: fade-in 0.4s ease-out;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
 .document .advise-box .line {
     display: block;
     max-width: 100%;
@@ -79,13 +91,17 @@ body {
     border-radius: 50%;
     background-color: var(--neon-green);
     cursor: pointer;
-    transition: box-shadow 0.3s ease-in-out;
+    transition: box-shadow 0.3s ease-in-out, transform 0.1s ease-out;
 }
 
 .document .advise-box .img-btn:hover,
 .document .advise-box .img-btn:focus-visible {
     box-shadow: 0 0 40px var(--neon-green);
     outline: none;
+}
+
+.document .advise-box .img-btn:active {
+    transform: translateX(-50%) scale(0.92);
 }
 
 .document .advise-box .img-btn:disabled {
@@ -99,6 +115,84 @@ body {
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+.document .advise-box .actions {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    gap: 4px;
+}
+
+.document .advise-box .action-btn {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--grayish-blue);
+    cursor: pointer;
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.document .advise-box .action-btn svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.document .advise-box .action-btn:hover,
+.document .advise-box .action-btn:focus-visible {
+    color: var(--neon-green);
+    background-color: var(--dark-blue);
+    outline: none;
+}
+
+.hint {
+    margin-top: 56px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--grayish-blue);
+}
+
+.hint kbd {
+    font-family: inherit;
+    padding: 2px 8px;
+    border: 1px solid var(--grayish-blue);
+    border-radius: 4px;
+    color: var(--light-cyan);
+}
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 48px;
+    transform: translate(-50%, 20px);
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: var(--neon-green);
+    color: var(--dark-blue);
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* Keyboard hint is only useful where there's a keyboard */
+@media (hover: none) {
+    .hint {
+        display: none;
     }
 }
 
@@ -128,7 +222,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .document .advise-box.loading .rood {
+    .document .advise-box.loading .rood,
+    .document .advise-box .text-advicd.fade-in {
         animation: none;
     }
 }
