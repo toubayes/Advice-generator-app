@@ -21,6 +21,14 @@
 <body>
   <main class="document">
     <article class="advise-box">
+      <div class="actions">
+        <button type="button" class="action-btn copy-btn" aria-label="Copy advice">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+        </button>
+        <button type="button" class="action-btn share-btn" aria-label="Share advice">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+        </button>
+      </div>
       <h1 class="advice-id">Advice <span class="num">#117</span></h1>
       <blockquote class="text-advicd" aria-live="polite">
         &ldquo;It is easy to sit up and take notice, what's difficult is getting up and taking action.&rdquo;
@@ -35,7 +43,10 @@
         <img src="images/icon-dice.svg" alt="" class="rood">
       </button>
     </article>
+    <p class="hint">Press <kbd>Space</kbd> for new advice</p>
   </main>
+
+  <div class="toast" role="status" aria-live="polite"></div>
 
   <footer class="attribution">
     Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank" rel="noopener">Frontend Mentor</a>.
