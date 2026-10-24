@@ -1,33 +1,32 @@
-let numtip=document.querySelector(".num");
-let tips = document.querySelector(".text-advicd");
-let refbtn=document.querySelector(".img-btn");
-let linebottom=document.querySelector(".line");
-let screenwidth =window.screen.width;
-// console.log(screenwidth);
-function getwidth(){
-    if (screenwidth >= 1200) {
-        linebottom.src ="images/pattern-divider-desktop.svg";
-        console.log("Greater than 1200");
-    } else if (screenwidth <= 375) {
-        linebottom.src ="images/pattern-divider-mobile.svg";
-        console.log("Less than 375");
+const adviceBox = document.querySelector(".advise-box");
+const numtip = document.querySelector(".num");
+const tips = document.querySelector(".text-advicd");
+const refbtn = document.querySelector(".img-btn");
+
+const ulapi = "https://api.adviceslip.com/advice";
+
+async function displaytip() {
+    adviceBox.classList.add("loading");
+    refbtn.disabled = true;
+
+    try {
+        // The API caches responses for ~2s, so bypass the browser cache
+        // to get a new piece of advice on every click.
+        const requet = await fetch(`${ulapi}?t=${Date.now()}`, { cache: "no-store" });
+        if (!requet.ok) {
+            throw new Error(`Request failed with status ${requet.status}`);
+        }
+        const dataset = await requet.json();
+        numtip.textContent = `#${dataset.slip.id}`;
+        tips.textContent = `“${dataset.slip.advice}”`;
+    } catch (error) {
+        console.error(error);
+        tips.textContent = "Couldn't fetch advice right now. Please try again.";
+    } finally {
+        adviceBox.classList.remove("loading");
+        refbtn.disabled = false;
     }
 }
 
-// Call the function
-getwidth();
-
-const ulapi ="https://api.adviceslip.com/advice";
-
- async function displaytip(){
-    let requet=  await fetch(ulapi);
-    let dataset= await requet.json();
-    console.log(dataset);
-    numtip.innerHTML= " # " + dataset.slip.id;
-    tips.innerHTML="\""+dataset.slip.advice+"\"" ;
-
-}
-refbtn.addEventListener("click" ,()=>{
-    displaytip();
-})
+refbtn.addEventListener("click", displaytip);
 displaytip();
