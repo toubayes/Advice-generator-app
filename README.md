@@ -19,7 +19,7 @@ Users should be able to:
 ### Features
 
 - Fetches random advice from the [Advice Slip API](https://api.adviceslip.com)
-- Bypasses the API's response cache so every click returns new advice
+- Requests a random advice id, so quick clicks never repeat (the API caches `/advice` for 2 seconds)
 - Loading state (spinning dice), with built-in advice as a fallback if the API is down
 - Copy and share buttons (uses the phone's share sheet where available)
 - Shareable links: `?id=42` opens that exact piece of advice

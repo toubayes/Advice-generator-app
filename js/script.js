@@ -7,52 +7,62 @@ const shareBtn = document.querySelector(".share-btn");
 const toast = document.querySelector(".toast");
 
 const ulapi = "https://api.adviceslip.com/advice";
+// The API has about 224 slips. Asking for a random id avoids the API's
+// 2-second server cache, which returns the same advice on quick clicks.
+const maxAdviceId = 224;
 
 // Used when the API can't be reached, so the app still works offline
 const fallbackAdvice = [
-    { id: 117, advice: "It is easy to sit up and take notice, what's difficult is getting up and taking action." },
-    { id: 4, advice: "Don't compare yourself to others." },
-    { id: 21, advice: "Don't be afraid of change." },
-    { id: 71, advice: "Always the burrito." },
-    { id: 155, advice: "If you're not sure, ask." },
+    "It is easy to sit up and take notice, what's difficult is getting up and taking action.",
+    "Don't compare yourself to others.",
+    "Don't be afraid of change.",
+    "If you're not sure, ask.",
+    "Take a break and come back with fresh eyes.",
 ];
 
 let current = null;
 let toastTimer;
 
 async function fetchSlip(id) {
-    // The API caches responses for ~2s, so bypass the browser cache
-    // to get a new piece of advice on every click.
-    const url = id ? `${ulapi}/${id}` : `${ulapi}?t=${Date.now()}`;
-    const requet = await fetch(url, { cache: "no-store" });
+    const requet = await fetch(`${ulapi}/${id}`, { cache: "no-store" });
     if (!requet.ok) {
         throw new Error(`Request failed with status ${requet.status}`);
     }
     const dataset = await requet.json();
+    // Missing ids come back as { message: { type: "error", ... } }
     if (!dataset.slip) {
-        throw new Error("No advice found");
+        throw new Error(dataset.message?.text || "No advice found");
     }
     return dataset.slip;
 }
 
+async function fetchRandomSlip() {
+    let lastError;
+    for (let attempt = 0; attempt < 4; attempt++) {
+        const id = Math.floor(Math.random() * maxAdviceId) + 1;
+        if (id === current?.id) continue;
+        try {
+            return await fetchSlip(id);
+        } catch (error) {
+            lastError = error;
+        }
+    }
+    throw lastError || new Error("No advice found");
+}
+
 function randomFallback() {
-    const options = fallbackAdvice.filter((slip) => slip.id !== current?.id);
-    return options[Math.floor(Math.random() * options.length)];
+    const options = fallbackAdvice.filter((advice) => advice !== current?.advice);
+    return { id: null, advice: options[Math.floor(Math.random() * options.length)] };
 }
 
 function showSlip(slip) {
     current = slip;
-    numtip.textContent = `#${slip.id}`;
+    numtip.textContent = slip.id ? `#${slip.id}` : "";
     tips.textContent = `“${slip.advice}”`;
     // Restart the fade-in animation for each new piece of advice
     tips.classList.remove("fade-in");
     void tips.offsetWidth;
     tips.classList.add("fade-in");
-
-    // Keep the address bar pointing at this advice so it can be shared
-    const url = new URL(window.location);
-    url.searchParams.set("id", slip.id);
-    history.replaceState(null, "", url);
 }
 
 async function displaytip(id) {
@@ -60,12 +70,7 @@ async function displaytip(id) {
     refbtn.disabled = true;
 
     try {
-        let slip = await fetchSlip(id);
-        // Ask once more if the API hands back the advice we're already showing
-        if (!id && slip.id === current?.id) {
-            slip = await fetchSlip();
-        }
-        showSlip(slip);
+        showSlip(id ? await fetchSlip(id) : await fetchRandomSlip());
     } catch (error) {
         console.error(error);
         showSlip(randomFallback());
@@ -73,6 +78,14 @@ async function displaytip(id) {
         adviceBox.classList.remove("loading");
         refbtn.disabled = false;
     }
+}
+
+function shareUrl() {
+    const url = new URL(window.location);
+    url.search = "";
+    url.hash = "";
+    if (current.id) url.searchParams.set("id", current.id);
+    return url.href;
 }
 
 function showToast(message) {
@@ -83,7 +96,7 @@ function showToast(message) {
 }
 
 function adviceText() {
-    return `“${current.advice}” — Advice #${current.id}`;
+    return current.id ? `“${current.advice}” — Advice #${current.id}` : `“${current.advice}”`;
 }
 
 async function copyAdvice() {
@@ -98,7 +111,7 @@ async function copyAdvice() {
 
 async function shareAdvice() {
     if (!current) return;
-    const url = window.location.href;
+    const url = shareUrl();
     if (navigator.share) {
         try {
             await navigator.share({ title: "Advice generator", text: adviceText(), url });
@@ -127,6 +140,12 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-// Open a specific piece of advice when the link includes ?id=
+// Open a specific piece of advice when the link includes ?id=, then tidy
+// the address bar so refreshing the page gives new advice again
 const sharedId = Number(new URLSearchParams(window.location.search).get("id"));
-displaytip(Number.isInteger(sharedId) && sharedId > 0 ? sharedId : undefined);
+if (Number.isInteger(sharedId) && sharedId > 0) {
+    history.replaceState(null, "", window.location.pathname);
+    displaytip(sharedId);
+} else {
+    displaytip();
+}
